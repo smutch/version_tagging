@@ -1,0 +1,40 @@
+import os
+import subprocess
+from SCons.Script.SConscript import SConsEnvironment
+
+def create_git_header():
+
+    header = """/*
+    * This file has been automatically generated.  Any modifications will be
+    * overwritten during compilation.
+    */
+    """
+
+    ref = subprocess.check_output('/usr/local/bin/git show-ref --head | head -n 1 | cut -d " " -f 1',
+            cwd = Dir('.').path,
+            shell = True).rstrip('\n')
+
+    diff = subprocess.check_output('/usr/local/bin/git diff --no-color',
+            cwd = Dir('.').path,
+            shell = True)
+
+    diff_defn = ""
+    for l in diff.splitlines():
+       diff_defn += '"'+l.replace('"', '\\"')+'"\\\n'
+    
+    with open("src/git.h", "w") as fd:
+        fd.write(header+"\n")
+        fd.write('#define GITREF \'"%s"\'\n\n' % ref)
+        fd.write('#define GITDIFF \'"%s"\'\n' % diff_defn)
+
+SConsEnvironment.CreateGitHeader = lambda env: create_git_header()
+
+
+vars = Variables()
+env = Environment(variables = vars, ENV=os.environ)
+
+node_list = ['src/version_tagging.c',]
+target = env.Program(target='bin/version_tagging', source=node_list)
+git_header = env.CreateGitHeader()
+Depends(target, git_header)
+Default(target)
