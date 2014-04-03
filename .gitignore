@@ -1,0 +1,4 @@
+*.o
+*.pyc
+src/git.h
+.sconsign.dblite
