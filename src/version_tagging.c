@@ -9,7 +9,6 @@ int main(int argc, char *argv[])
 
   hid_t fd;
   hsize_t dims[1] = {10};
-  int values[10] = {1,2,3,4,5,6,7,8,9,10};
   
   printf("Hello world!\n");
 
