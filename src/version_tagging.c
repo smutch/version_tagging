@@ -16,8 +16,8 @@ int main(int argc, char *argv[])
   printf("Writing file...\n");
 
   fd = H5Fcreate("output.hdf5", H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
-  H5LTmake_dataset_int(fd, "data", 1, dims, values);
-  H5LTset_attribute_string(fd, "data", "gitref", GITREF);
+  H5LTmake_dataset_string(fd, "gitdiff", GITDIFF);
+  H5LTset_attribute_string(fd, "gitdiff", "gitref", GITREF);
   H5Fclose(fd);
 
   printf("...done\n");

@@ -20,7 +20,7 @@ def create_git_header():
 
     diff_defn = ""
     for l in diff.splitlines():
-       diff_defn += '"'+l.replace('\\', '\\\\').replace('"', '\\"')+'"\\\n'
+       diff_defn += '"'+l.replace('\\', '\\\\').replace('"', '\\"')+'\\n"\\\n'
     
     with open("src/git.h", "w") as fd:
         fd.write(header+"\n")
@@ -32,6 +32,11 @@ SConsEnvironment.CreateGitHeader = lambda env: create_git_header()
 
 vars = Variables()
 env = Environment(variables = vars, ENV=os.environ)
+
+env.AppendUnique(CPPPATH = ["/usr/local/include"])
+env.AppendUnique(LIBPATH = ["/usr/local/lib"])
+env.AppendUnique(LIBS = ['z', 'libhdf5_hl', 'libhdf5'])
+env.AppendUnique(CPPFLAGS = '-std=gnu99')
 
 node_list = ['src/version_tagging.c',]
 target = env.Program(target='bin/version_tagging', source=node_list)
